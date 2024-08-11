@@ -33,28 +33,6 @@
             cursor: pointer;
             position: relative;
         }
-        .survivors {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .survivor {
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: border 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: white;
-            font-weight: bold;
-        }
-        .survivor.selected {
-            border-color: green;
-        }
         .clear-btn {
             padding: 10px 20px;
             font-size: 16px;
@@ -71,30 +49,38 @@
         .cell.highlighted {
             background-color: green;
         }
+        /* Popup styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #ccc;
+            z-index: 10;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .popup img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9;
+        }
     </style>
 </head>
 <body>
-
-    <div class="survivors">
-        <img src="imgs/content_icon_1.png" alt="Default" class="survivor">
-	<img src="imgs/content_icon_2.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_3.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_7.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_8.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_9.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_10.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_11.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_12.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_13.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_14.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_15.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_16.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_17.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_18.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_19.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_20.png" alt="Catnips" class="survivor">
-        <img src="imgs/content_icon_21.png" alt="Catnips" class="survivor">
-    </div>
 
     <div class="board">
         <!-- Quadrados do tabuleiro -->
@@ -127,44 +113,79 @@
 
     <button class="clear-btn">Limpar Tudo</button>
 
+    <!-- Popup for selecting survivor -->
+    <div class="overlay"></div>
+    <div class="popup">
+        <div class="survivors">
+            <img src="imgs/content_icon_1.png" alt="Default" class="survivor">
+            <img src="imgs/content_icon_2.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_3.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_7.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_8.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_9.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_10.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_11.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_12.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_13.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_14.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_15.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_16.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_17.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_18.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_19.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_20.png" alt="Catnips" class="survivor">
+            <img src="imgs/content_icon_21.png" alt="Catnips" class="survivor">
+        </div>
+    </div>
+
     <script>
         let selectedSurvivor = null;
+        let targetCell = null;
 
-        // Seleciona o sobrevivente ou símbolo da multidão e destaca com borda verde
-        document.querySelectorAll('.survivor, .crowd-symbol').forEach(survivor => {
-            survivor.addEventListener('click', function() {
-                document.querySelectorAll('.survivor, .crowd-symbol').forEach(s => s.classList.remove('selected'));
-                selectedSurvivor = this.cloneNode(true);
-                this.classList.add('selected');
-            });
-        });
-
-        // Coloca ou remove o sobrevivente no quadrado
+        // Show popup on cell click if empty
         document.querySelectorAll('.cell').forEach(cell => {
             cell.addEventListener('click', function() {
-                if (this.innerHTML === "" && selectedSurvivor) {
-                    this.appendChild(selectedSurvivor.cloneNode(true));
-                } else {
-                    this.innerHTML = "";
+                if (this.innerHTML === "") {
+                    targetCell = this;
+                    document.querySelector('.popup').style.display = 'block';
+                    document.querySelector('.overlay').style.display = 'block';
                 }
             });
 
-            // Se o usuário clicar com o botão direito em uma célula, destaca o fundo em verde se houver um sobrevivente
+            // Toggle background green on right-click
             cell.addEventListener('contextmenu', function(event) {
-                event.preventDefault(); // Impede o menu de contexto padrão
+                event.preventDefault(); // Prevent default context menu
                 if (this.innerHTML !== "") {
                     this.classList.toggle('highlighted');
                 }
             });
         });
 
-        // Limpa todos os quadrados
+        // Handle survivor selection from the popup
+        document.querySelectorAll('.popup .survivor').forEach(survivor => {
+            survivor.addEventListener('click', function() {
+                if (targetCell) {
+                    selectedSurvivor = this.cloneNode(true);
+                    targetCell.appendChild(selectedSurvivor);
+                    targetCell = null;
+                    document.querySelector('.popup').style.display = 'none';
+                    document.querySelector('.overlay').style.display = 'none';
+                }
+            });
+        });
+
+        // Clear all cells and remove highlights
         document.querySelector('.clear-btn').addEventListener('click', function() {
             document.querySelectorAll('.cell').forEach(cell => {
                 cell.innerHTML = "";
                 cell.classList.remove('highlighted');
             });
-            document.querySelectorAll('.survivor, .crowd-symbol').forEach(s => s.classList.remove('selected'));
+        });
+
+        // Close popup when clicking outside
+        document.querySelector('.overlay').addEventListener('click', function() {
+            document.querySelector('.popup').style.display = 'none';
+            document.querySelector('.overlay').style.display = 'none';
         });
     </script>
 
