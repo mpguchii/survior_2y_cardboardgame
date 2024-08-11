@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board 5x5 com Sobreviventes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            grid-template-rows: repeat(5, 50px);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            cursor: pointer;
+            position: relative;
+        }
+        .survivors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .survivor, .crowd-symbol {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+        }
+        .survivor.selected, .crowd-symbol.selected {
+            border-color: green;
+        }
+        .crowd-gold {
+            background-color: gold;
+        }
+        .crowd-silver {
+            background-color: silver;
+        }
+        .crowd-bronze {
+            background-color: #cd7f32; 
+        }
+        .crowd-diamond {
+            background-color: #b9f2ff; 
+        }
+        .clear-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .cell img, .cell .crowd-symbol {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .cell.highlighted {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="survivors">
+        <img src="imgs/content_icon_1.png" alt="Default" class="survivor">
+		<img src="imgs/content_icon_2.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_3.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_7.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_8.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_9.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_10.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_11.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_12.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_13.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_14.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_15.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_16.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_17.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_18.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_19.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_20.png" alt="Catnips" class="survivor">
+        <img src="imgs/content_icon_21.png" alt="Catnips" class="survivor">
+    </div>
+
+    <div class="board">
+        <!-- Quadrados do tabuleiro -->
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+
+    <button class="clear-btn">Limpar Tudo</button>
+
+    <script>
+        let selectedSurvivor = null;
+
+        // Seleciona o sobrevivente ou símbolo da multidão e destaca com borda verde
+        document.querySelectorAll('.survivor, .crowd-symbol').forEach(survivor => {
+            survivor.addEventListener('click', function() {
+                document.querySelectorAll('.survivor, .crowd-symbol').forEach(s => s.classList.remove('selected'));
+                selectedSurvivor = this.cloneNode(true);
+                this.classList.add('selected');
+            });
+        });
+
+        // Coloca ou remove o sobrevivente no quadrado
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.addEventListener('click', function() {
+                if (this.innerHTML === "" && selectedSurvivor) {
+                    this.appendChild(selectedSurvivor.cloneNode(true));
+                } else {
+                    this.innerHTML = "";
+                }
+            });
+
+            // Se o usuário clicar com o botão direito em uma célula, destaca o fundo em verde se houver um sobrevivente
+            cell.addEventListener('contextmenu', function(event) {
+                event.preventDefault(); // Impede o menu de contexto padrão
+                if (this.innerHTML !== "") {
+                    this.classList.toggle('highlighted');
+                }
+            });
+        });
+
+        // Limpa todos os quadrados
+        document.querySelector('.clear-btn').addEventListener('click', function() {
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.innerHTML = "";
+                cell.classList.remove('highlighted');
+            });
+            document.querySelectorAll('.survivor, .crowd-symbol').forEach(s => s.classList.remove('selected'));
+        });
+    </script>
+
+</body>
+</html>
