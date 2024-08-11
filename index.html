@@ -49,7 +49,6 @@
         .cell.highlighted {
             background-color: green;
         }
-        /* Popup styling */
         .popup {
             display: none;
             position: fixed;
@@ -57,10 +56,10 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: white;
-            padding: 20px;
-            border: 2px solid #ccc;
-            z-index: 10;
+            border: 1px solid #ccc;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000;
         }
         .popup img {
             width: 40px;
@@ -76,7 +75,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9;
+            z-index: 999;
         }
     </style>
 </head>
@@ -108,84 +107,86 @@
         <div class="cell"></div>
         <div class="cell"></div>
         <div class="cell"></div>
-        <div class="cell"></div>
     </div>
 
     <button class="clear-btn">Limpar Tudo</button>
 
-    <!-- Popup for selecting survivor -->
     <div class="overlay"></div>
     <div class="popup">
-        <div class="survivors">
-            <img src="imgs/content_icon_1.png" alt="Default" class="survivor">
-            <img src="imgs/content_icon_2.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_3.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_7.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_8.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_9.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_10.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_11.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_12.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_13.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_14.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_15.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_16.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_17.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_18.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_19.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_20.png" alt="Catnips" class="survivor">
-            <img src="imgs/content_icon_21.png" alt="Catnips" class="survivor">
-        </div>
+        <img src="imgs/content_icon_1.png" alt="Default">
+        <img src="imgs/content_icon_2.png" alt="Catnips">
+        <img src="imgs/content_icon_3.png" alt="Catnips">
+        <img src="imgs/content_icon_7.png" alt="Catnips">
+        <img src="imgs/content_icon_8.png" alt="Catnips">
+        <img src="imgs/content_icon_9.png" alt="Catnips">
+        <img src="imgs/content_icon_10.png" alt="Catnips">
+        <img src="imgs/content_icon_11.png" alt="Catnips">
+        <img src="imgs/content_icon_12.png" alt="Catnips">
+        <img src="imgs/content_icon_13.png" alt="Catnips">
+        <img src="imgs/content_icon_14.png" alt="Catnips">
+        <img src="imgs/content_icon_15.png" alt="Catnips">
+        <img src="imgs/content_icon_16.png" alt="Catnips">
+        <img src="imgs/content_icon_17.png" alt="Catnips">
+        <img src="imgs/content_icon_18.png" alt="Catnips">
+        <img src="imgs/content_icon_19.png" alt="Catnips">
+        <img src="imgs/content_icon_20.png" alt="Catnips">
+        <img src="imgs/content_icon_21.png" alt="Catnips">
     </div>
 
     <script>
         let selectedSurvivor = null;
-        let targetCell = null;
+        const overlay = document.querySelector('.overlay');
+        const popup = document.querySelector('.popup');
+        let currentCell = null;
 
-        // Show popup on cell click if empty
+        // Abre o popup ao clicar em uma célula vazia
         document.querySelectorAll('.cell').forEach(cell => {
             cell.addEventListener('click', function() {
                 if (this.innerHTML === "") {
-                    targetCell = this;
-                    document.querySelector('.popup').style.display = 'block';
-                    document.querySelector('.overlay').style.display = 'block';
+                    currentCell = this;
+                    overlay.style.display = 'block';
+                    popup.style.display = 'flex';
+                } else {
+                    this.innerHTML = "";
                 }
             });
 
-            // Toggle background green on right-click
+            // Se o usuário clicar com o botão direito em uma célula, destaca o fundo em verde se houver um sobrevivente
             cell.addEventListener('contextmenu', function(event) {
-                event.preventDefault(); // Prevent default context menu
+                event.preventDefault(); // Impede o menu de contexto padrão
                 if (this.innerHTML !== "") {
                     this.classList.toggle('highlighted');
                 }
             });
         });
 
-        // Handle survivor selection from the popup
-        document.querySelectorAll('.popup .survivor').forEach(survivor => {
-            survivor.addEventListener('click', function() {
-                if (targetCell) {
-                    selectedSurvivor = this.cloneNode(true);
-                    targetCell.appendChild(selectedSurvivor);
-                    targetCell = null;
-                    document.querySelector('.popup').style.display = 'none';
-                    document.querySelector('.overlay').style.display = 'none';
+        // Seleciona o sobrevivente no popup
+        document.querySelectorAll('.popup img').forEach(img => {
+            img.addEventListener('click', function() {
+                if (currentCell) {
+                    currentCell.innerHTML = "";
+                    const survivor = this.cloneNode(true);
+                    currentCell.appendChild(survivor);
+                    currentCell = null;
+                    overlay.style.display = 'none';
+                    popup.style.display = 'none';
                 }
             });
         });
 
-        // Clear all cells and remove highlights
+        // Fecha o popup ao clicar na sobreposição
+        overlay.addEventListener('click', function() {
+            overlay.style.display = 'none';
+            popup.style.display = 'none';
+            currentCell = null;
+        });
+
+        // Limpa todos os quadrados
         document.querySelector('.clear-btn').addEventListener('click', function() {
             document.querySelectorAll('.cell').forEach(cell => {
                 cell.innerHTML = "";
                 cell.classList.remove('highlighted');
             });
-        });
-
-        // Close popup when clicking outside
-        document.querySelector('.overlay').addEventListener('click', function() {
-            document.querySelector('.popup').style.display = 'none';
-            document.querySelector('.overlay').style.display = 'none';
         });
     </script>
 
