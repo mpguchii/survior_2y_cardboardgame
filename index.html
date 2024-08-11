@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Board 5x5 com Sobreviventes</title>
+    <title>Dois Boards 5x5 com Sobreviventes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,6 +14,17 @@
             height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
+        }
+        .boards-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 20px;
+        }
+        .board-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .board {
             display: grid;
@@ -81,35 +92,71 @@
 </head>
 <body>
 
-    <div class="board">
-        <!-- Quadrados do tabuleiro -->
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
+    <div class="boards-container">
+        <div class="board-container">
+            <div class="board">
+                <!-- Quadrados do primeiro tabuleiro -->
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+            </div>
+            <button class="clear-btn">Limpar Tudo</button>
+        </div>
+        
+        <div class="board-container">
+            <div class="board">
+                <!-- Quadrados do segundo tabuleiro -->
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+            </div>
+            <button class="clear-btn">Limpar Tudo</button>
+        </div>
     </div>
-
-    <button class="clear-btn">Limpar Tudo</button>
 
     <div class="overlay"></div>
     <div class="popup">
@@ -182,10 +229,13 @@
         });
 
         // Limpa todos os quadrados
-        document.querySelector('.clear-btn').addEventListener('click', function() {
-            document.querySelectorAll('.cell').forEach(cell => {
-                cell.innerHTML = "";
-                cell.classList.remove('highlighted');
+        document.querySelectorAll('.clear-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const board = this.previousElementSibling;
+                board.querySelectorAll('.cell').forEach(cell => {
+                    cell.innerHTML = "";
+                    cell.classList.remove('highlighted');
+                });
             });
         });
     </script>
